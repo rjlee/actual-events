@@ -1,0 +1,71 @@
+name: Docker Build & Publish (actual-events)
+
+on:
+  push:
+    branches: [release]
+  workflow_run:
+    workflows: ['CI & Release (actual-events)']
+    types: [completed]
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  docker-build:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all tags
+        run: git fetch --tags --force
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-actual-events
+
+      - name: Compute image version
+        id: get_version
+        shell: bash
+        run: |
+          set -e
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ -n "$TAG" ]; then
+            VERSION=${TAG#v}
+          else
+            if [ -f actual-events/package.json ]; then
+              VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]\+\)".*/\1/p' actual-events/package.json | head -n1)
+            elif [ -f package.json ]; then
+              VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]\+\)".*/\1/p' package.json | head -n1)
+            else
+              VERSION="0.0.0"
+            fi
+            GIT_SHA=$(git rev-parse --short HEAD)
+            VERSION="${VERSION}-${GIT_SHA}"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./actual-events
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}-actual-events:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}-actual-events:latest
+          labels: ${{ steps.meta.outputs.labels }}
