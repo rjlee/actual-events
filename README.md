@@ -1,0 +1,90 @@
+Actual Events Sidecar
+
+Exposes Actual Budget change events over Server‑Sent Events (SSE) by periodically syncing and diffing accounts and recent transactions.
+
+Endpoints
+
+- GET /events: SSE stream (with CORS + optional Bearer auth). Supports Last-Event-ID to replay recent events.
+  - Optional query filters: `entities`, `events`, `accounts` as comma-separated lists
+    - entities: transaction, account, payee, category, categoryGroup, rule, sync, scan
+    - events: (e.g.) transaction.created, account.updated, transfer.linked
+    - accounts: account ids (filters transactions by `account` and accounts by `id`)
+- WebSocket: ws://host:PORT/ws?entities=...&events=...&accounts=... (same auth via Authorization: Bearer <token>, Origin checked against CORS allowlist)
+  - Runtime updates: send a JSON message to update filters
+    - { "type": "filter", "entities": "transaction,account", "events": "transaction.updated", "accounts": "acc_1,acc_2", "useRegex": false }
+    - Acks: { "type": "filter.ack", "ok": true }
+    - Ping/pong: send { "type": "ping" } and receive { "type": "pong", ts }
+- GET /healthz: liveness check.
+- POST /nudge (optional): triggers an immediate scan.
+
+Event types
+
+- Accounts:
+  - account.created, account.updated, account.deleted
+  - account.closed, account.reopened (specialized updates on `closed` flag)
+- Transactions (within LOOKBACK_DAYS window):
+  - transaction.created, transaction.updated, transaction.deleted
+  - transaction.cleared, transaction.uncleared (cleared flag flips)
+  - transaction.reconciled, transaction.unreconciled (reconciled flag flips)
+  - transfer.linked, transfer.unlinked, transfer.updated (transfer_id changes)
+- Payees:
+  - payee.created, payee.updated, payee.deleted
+- Categories & Groups:
+  - category.created, category.updated, category.deleted
+  - categoryGroup.created, categoryGroup.updated, categoryGroup.deleted
+- Rules:
+  - rule.created, rule.updated, rule.deleted
+- Sync/system:
+  - sync.started, sync.completed, sync.failed (per scan cycle)
+  - scan.noop (no changes in a cycle)
+
+Event schema
+
+- id: monotonically increasing integer as string.
+- type: transaction.created|updated|deleted, account.created|updated|deleted
+- entity: transaction|account
+- before: previous snapshot (omitted on created)
+- after: new snapshot (omitted on deleted)
+- meta: { detectedAt }
+
+Config
+
+- ACTUAL_SERVER_URL, ACTUAL_PASSWORD, ACTUAL_SYNC_ID, ACTUAL_BUDGET_ENCRYPTION_PASSWORD (optional)
+- BUDGET_DIR: where to cache the budget locally (default ./data/budget)
+- LOOKBACK_DAYS: transaction window to scan (default 60)
+- SCAN_INTERVAL_MS: scan interval in ms (default 15000)
+- PORT: HTTP port (default 4000)
+- LOG_LEVEL: error|warn|info|debug (default info)
+- AUTH_TOKEN: optional Bearer token required for /events, /nudge, and WS (omit to disable auth)
+- CORS_ORIGINS: comma-separated origins allowlist for CORS and WS Origin checks (use \* to allow any)
+
+Run
+
+- npm install
+- cp .env.example .env and fill values
+- npm start
+
+Quick example (Node SSE client)
+
+```sh
+node -e "const EventSource=require('eventsource');const es=new EventSource('http://localhost:4000/events');es.onmessage=msg=>console.log(msg.data)"
+```
+
+For more complete usage (auth, filters, reconnect), see the example app in `examples/sse-consumer`.
+
+Event Reference
+
+See `EVENTS.md` for a complete description of all event types, payloads, and server-side filters.
+
+Daemon mode (background)
+
+- Start without external tools:
+  - node src/index.js --daemonize --pid-file ./data/events.pid --log-file ./data/events.log
+  - Writes the child PID to `./data/events.pid` and logs to `./data/events.log`.
+- Stop:
+  - kill "$(cat ./data/events.pid)"
+- Optional flags/env:
+  - `--scan-interval-ms <ms>`: override scan interval. Set to `0` to disable the periodic timer (use POST `/nudge` to trigger scans).
+  - `--pid-file <path>` or `PID_FILE` env: path for the daemon PID (default: none).
+  - `--log-file <path>` or `LOG_FILE` env: file for stdout/stderr when daemonized (default: ignored).
+  - `DAEMONIZE=true` env can be used in place of `--daemonize`.
