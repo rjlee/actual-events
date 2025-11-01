@@ -5,12 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>actual-events Web UI</title>
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 1rem; }
-      input, button { margin: 0.25rem; padding: 0.4rem; }
-      textarea { width: 100%; height: 300px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-      .row { margin-bottom: 0.5rem; }
-      .small { font-size: 0.9em; color: #666; }
-      .tag { background: #eef; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        margin: 1rem;
+      }
+      input,
+      button {
+        margin: 0.25rem;
+        padding: 0.4rem;
+      }
+      textarea {
+        width: 100%;
+        height: 300px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .row {
+        margin-bottom: 0.5rem;
+      }
+      .small {
+        font-size: 0.9em;
+        color: #666;
+      }
+      .tag {
+        background: #eef;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-right: 6px;
+      }
     </style>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -36,7 +62,7 @@
 
         function append(ev) {
           const line = typeof ev === 'string' ? ev : JSON.stringify(ev);
-          setLog(prev => (prev ? prev + '\n' : '') + line);
+          setLog((prev) => (prev ? prev + '\n' : '') + line);
         }
 
         function buildParams() {
@@ -49,37 +75,69 @@
         }
 
         function connectSSE() {
-          try { disconnect(); } catch {}
+          try {
+            disconnect();
+          } catch {}
           const qs = buildParams();
-          const url = host.replace(/\/$/, '') + '/events' + (qs ? '?' + qs : '');
+          const url =
+            host.replace(/\/$/, '') + '/events' + (qs ? '?' + qs : '');
           append(`Connecting SSE: ${url}`);
           const es = new EventSource(url);
-          es.onopen = () => { setConnected(true); setMode('sse'); append('[sse] open'); };
-          es.onerror = (err) => { append('[sse] error: ' + (err?.message || '')); };
+          es.onopen = () => {
+            setConnected(true);
+            setMode('sse');
+            append('[sse] open');
+          };
+          es.onerror = (err) => {
+            append('[sse] error: ' + (err?.message || ''));
+          };
           es.onmessage = (msg) => {
-            try { append(JSON.parse(msg.data)); } catch { append(msg.data); }
+            try {
+              append(JSON.parse(msg.data));
+            } catch {
+              append(msg.data);
+            }
           };
           sseRef.current = es;
         }
 
         function connectWS() {
-          try { disconnect(); } catch {}
+          try {
+            disconnect();
+          } catch {}
           const qs = buildParams();
-          const url = host.replace(/^http/,'ws').replace(/\/$/, '') + '/ws' + (qs ? '?' + qs : '');
+          const url =
+            host.replace(/^http/, 'ws').replace(/\/$/, '') +
+            '/ws' +
+            (qs ? '?' + qs : '');
           append(`Connecting WS: ${url}`);
           const ws = new WebSocket(url);
-          ws.onopen = () => { setConnected(true); setMode('ws'); append('[ws] open'); };
+          ws.onopen = () => {
+            setConnected(true);
+            setMode('ws');
+            append('[ws] open');
+          };
           ws.onerror = (e) => append('[ws] error');
           ws.onclose = () => append('[ws] close');
           ws.onmessage = (ev) => {
-            try { append(JSON.parse(ev.data)); } catch { append(ev.data); }
+            try {
+              append(JSON.parse(ev.data));
+            } catch {
+              append(ev.data);
+            }
           };
           wsRef.current = ws;
         }
 
         function updateWSFilter() {
           if (wsRef.current && wsRef.current.readyState === 1) {
-            const msg = { type: 'filter', entities, events, accounts, useRegex };
+            const msg = {
+              type: 'filter',
+              entities,
+              events,
+              accounts,
+              useRegex,
+            };
             wsRef.current.send(JSON.stringify(msg));
             append('[ws] filter update sent');
           } else {
@@ -88,9 +146,18 @@
         }
 
         function disconnect() {
-          if (sseRef.current) { sseRef.current.close(); sseRef.current = null; }
-          if (wsRef.current) { try { wsRef.current.close(); } catch {} wsRef.current = null; }
-          setConnected(false); setMode(null);
+          if (sseRef.current) {
+            sseRef.current.close();
+            sseRef.current = null;
+          }
+          if (wsRef.current) {
+            try {
+              wsRef.current.close();
+            } catch {}
+            wsRef.current = null;
+          }
+          setConnected(false);
+          setMode(null);
           append('[*] disconnected');
         }
 
@@ -99,25 +166,66 @@
             <h2>actual-events Web UI</h2>
             <div className="row">
               <label>Host </label>
-              <input value={host} onChange={e => setHost(e.target.value)} style={{width:'24rem'}} />
+              <input
+                value={host}
+                onChange={(e) => setHost(e.target.value)}
+                style={{ width: '24rem' }}
+              />
             </div>
             <div className="row">
               <span className="tag">entities</span>
-              <input placeholder="transaction,account" value={entities} onChange={e=>setEntities(e.target.value)} />
+              <input
+                placeholder="transaction,account"
+                value={entities}
+                onChange={(e) => setEntities(e.target.value)}
+              />
               <span className="tag">events</span>
-              <input placeholder="^transaction\\." value={events} onChange={e=>setEvents(e.target.value)} />
+              <input
+                placeholder="^transaction\\."
+                value={events}
+                onChange={(e) => setEvents(e.target.value)}
+              />
               <span className="tag">accounts</span>
-              <input placeholder="acc_123,acc_456" value={accounts} onChange={e=>setAccounts(e.target.value)} />
-              <label><input type="checkbox" checked={useRegex} onChange={e=>setUseRegex(e.target.checked)} /> useRegex</label>
+              <input
+                placeholder="acc_123,acc_456"
+                value={accounts}
+                onChange={(e) => setAccounts(e.target.value)}
+              />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={useRegex}
+                  onChange={(e) => setUseRegex(e.target.checked)}
+                />{' '}
+                useRegex
+              </label>
             </div>
             <div className="row">
-              <button onClick={connectSSE} disabled={connected && mode==='sse'}>Connect SSE</button>
-              <button onClick={connectWS} disabled={connected && mode==='ws'}>Connect WS</button>
-              <button onClick={updateWSFilter} disabled={!connected || mode!=='ws'}>Update WS Filter</button>
-              <button onClick={disconnect} disabled={!connected}>Disconnect</button>
-              <button onClick={()=>setLog('')}>Clear Log</button>
+              <button
+                onClick={connectSSE}
+                disabled={connected && mode === 'sse'}
+              >
+                Connect SSE
+              </button>
+              <button onClick={connectWS} disabled={connected && mode === 'ws'}>
+                Connect WS
+              </button>
+              <button
+                onClick={updateWSFilter}
+                disabled={!connected || mode !== 'ws'}
+              >
+                Update WS Filter
+              </button>
+              <button onClick={disconnect} disabled={!connected}>
+                Disconnect
+              </button>
+              <button onClick={() => setLog('')}>Clear Log</button>
             </div>
-            <div className="small">Tip: When AUTH_TOKEN is enabled on the server, browsers cannot send Authorization headers. Use a proxy to inject the header or temporarily disable auth for this demo.</div>
+            <div className="small">
+              Tip: When AUTH_TOKEN is enabled on the server, browsers cannot
+              send Authorization headers. Use a proxy to inject the header or
+              temporarily disable auth for this demo.
+            </div>
             <div className="row">
               <textarea readOnly value={log}></textarea>
             </div>
@@ -129,5 +237,4 @@
       root.render(<App />);
     </script>
   </body>
-  </html>
-
+</html>

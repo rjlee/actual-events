@@ -24,7 +24,9 @@ if (CATEGORY_GROUPS) params.set('categoryGroups', CATEGORY_GROUPS);
 if (RULES) params.set('rules', RULES);
 if (USE_REGEX) params.set('useRegex', 'true');
 
-const wsUrl = HOST.replace(/^http/, 'ws') + `/ws${params.toString() ? '?' + params.toString() : ''}`;
+const wsUrl =
+  HOST.replace(/^http/, 'ws') +
+  `/ws${params.toString() ? '?' + params.toString() : ''}`;
 const headers = {};
 if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
 // Optional: if your server checks Origin, set it to an allowed value
@@ -39,7 +41,12 @@ ws.on('open', () => {
   setInterval(() => {
     try {
       ws.send(JSON.stringify({ type: 'ping' }));
-    } catch {}
+    } catch (e) {
+      // Ignore transient send errors (e.g., socket not ready)
+      // but surface in debug logs for troubleshooting.
+      // Use console.debug to avoid noisy output in normal runs.
+      console.debug('WS ping send failed:', e && e.message ? e.message : e);
+    }
   }, 30000);
   // Example: update filters at runtime from env UPDATE_* variables
   if (
@@ -83,4 +90,3 @@ ws.on('error', (err) => {
 ws.on('close', (code) => {
   console.log('WS closed', code);
 });
-

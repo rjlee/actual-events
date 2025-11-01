@@ -3,7 +3,7 @@ WORKDIR /app
 
 # Install production dependencies
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production --no-audit --no-fund
 
 # Copy source
 COPY src ./src
@@ -12,4 +12,3 @@ ENV NODE_ENV=production
 
 EXPOSE 4000
 ENTRYPOINT ["node", "src/index.js"]
-

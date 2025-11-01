@@ -3,6 +3,7 @@ WS Consumer Example
 Simple Node client that connects to the actual-events WebSocket endpoint and logs events. Supports initial filters via query string and runtime filter updates via a message.
 
 Setup
+
 - cd actual-events/examples/ws-consumer
 - npm install
 - Create a .env file with (adjust as needed):
@@ -32,7 +33,7 @@ EVENTS_HOST=http://localhost:4000
 ```
 
 Run
+
 - npm start
 
-You should see events printed as they are detected. Use the UPDATE_* variables to change filters at runtime.
-
+You should see events printed as they are detected. Use the UPDATE\_\* variables to change filters at runtime.

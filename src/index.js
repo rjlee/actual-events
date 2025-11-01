@@ -213,7 +213,8 @@ async function main() {
     return undefined;
   };
 
-  const daemonize = has('--daemonize') || /^true$/i.test(process.env.DAEMONIZE || '');
+  const daemonize =
+    has('--daemonize') || /^true$/i.test(process.env.DAEMONIZE || '');
   const isChild = has('--child');
   // Allow overriding scan interval via CLI
   const scanArg = get('--scan-interval-ms');
@@ -225,7 +226,9 @@ async function main() {
     let err = 'ignore';
     try {
       if (logFile) {
-        const abs = path.isAbsolute(logFile) ? logFile : path.join(process.cwd(), logFile);
+        const abs = path.isAbsolute(logFile)
+          ? logFile
+          : path.join(process.cwd(), logFile);
         fs.mkdirSync(path.dirname(abs), { recursive: true });
         const fd = fs.openSync(abs, 'a');
         out = fd;
@@ -254,7 +257,9 @@ async function main() {
     const pidFile = get('--pid-file') || process.env.PID_FILE;
     if (pidFile) {
       try {
-        const abs = path.isAbsolute(pidFile) ? pidFile : path.join(process.cwd(), pidFile);
+        const abs = path.isAbsolute(pidFile)
+          ? pidFile
+          : path.join(process.cwd(), pidFile);
         fs.mkdirSync(path.dirname(abs), { recursive: true });
         fs.writeFileSync(abs, String(process.pid));
       } catch (e) {

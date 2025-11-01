@@ -1,4 +1,7 @@
-jest.mock('../src/utils', () => ({ openBudget: jest.fn(), closeBudget: jest.fn() }));
+jest.mock('../src/utils', () => ({
+  openBudget: jest.fn(),
+  closeBudget: jest.fn(),
+}));
 
 let supertest;
 try {
@@ -24,7 +27,8 @@ try {
 }
 
 const ENABLE = process.env.ENABLE_NET_TESTS === '1';
-const maybe = ENABLE && supertest && WebSocket && expressAvail ? describe : describe.skip;
+const maybe =
+  ENABLE && supertest && WebSocket && expressAvail ? describe : describe.skip;
 
 maybe('HTTP auth and WS origin/auth', () => {
   let server;
@@ -36,12 +40,17 @@ maybe('HTTP auth and WS origin/auth', () => {
     ({ startServer } = require('../src/index'));
     process.env.AUTH_TOKEN = token;
     process.env.CORS_ORIGINS = 'http://allowed.local';
-    const started = await startServer({ port: 0, scanIntervalMs: 0, skipBudget: true });
+    const started = await startServer({
+      port: 0,
+      scanIntervalMs: 0,
+      skipBudget: true,
+    });
     server = started.server;
   });
   afterAll((done) => {
     try {
-      if (server) server.close(() => done()); else done();
+      if (server) server.close(() => done());
+      else done();
     } catch (e) {
       done();
     }
@@ -53,7 +62,10 @@ maybe('HTTP auth and WS origin/auth', () => {
     // Missing token
     await req.get('/events').expect(401);
     // With token
-    await req.get('/events').set('Authorization', `Bearer ${token}`).expect(200);
+    await req
+      .get('/events')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
   });
 
   test('WS blocks bad origin and missing auth; allows with both', async () => {
@@ -62,7 +74,12 @@ maybe('HTTP auth and WS origin/auth', () => {
 
     // Bad origin
     await new Promise((resolve) => {
-      const ws = new WebSocket(url, { headers: { Origin: 'http://bad.local', Authorization: `Bearer ${token}` } });
+      const ws = new WebSocket(url, {
+        headers: {
+          Origin: 'http://bad.local',
+          Authorization: `Bearer ${token}`,
+        },
+      });
       ws.on('error', () => resolve());
       ws.on('open', () => {
         // Should not open
@@ -73,7 +90,9 @@ maybe('HTTP auth and WS origin/auth', () => {
 
     // Missing token
     await new Promise((resolve) => {
-      const ws = new WebSocket(url, { headers: { Origin: 'http://allowed.local' } });
+      const ws = new WebSocket(url, {
+        headers: { Origin: 'http://allowed.local' },
+      });
       ws.on('error', () => resolve());
       ws.on('open', () => {
         ws.terminate();
@@ -83,7 +102,12 @@ maybe('HTTP auth and WS origin/auth', () => {
 
     // Allowed
     await new Promise((resolve, reject) => {
-      const ws = new WebSocket(url, { headers: { Origin: 'http://allowed.local', Authorization: `Bearer ${token}` } });
+      const ws = new WebSocket(url, {
+        headers: {
+          Origin: 'http://allowed.local',
+          Authorization: `Bearer ${token}`,
+        },
+      });
       ws.on('open', () => {
         ws.terminate();
         resolve();
