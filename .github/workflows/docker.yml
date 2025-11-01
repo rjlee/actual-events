@@ -63,7 +63,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./actual-events
+          context: .
           push: true
           tags: |
             ghcr.io/${{ github.repository }}-actual-events:${{ steps.get_version.outputs.VERSION }}
