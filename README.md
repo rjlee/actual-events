@@ -5,14 +5,21 @@ Exposes Actual Budget change events over Server‑Sent Events (SSE) by periodica
 Endpoints
 
 - GET /events: SSE stream (with CORS + optional Bearer auth). Supports Last-Event-ID to replay recent events.
-  - Optional query filters: `entities`, `events`, `accounts` as comma-separated lists
+  - Optional query filters (comma-separated lists unless noted): `entities`, `events`, `accounts`, `payees`, `categories`, `categoryGroups`, `rules`, and `useRegex` (boolean).
     - entities: transaction, account, payee, category, categoryGroup, rule, sync, scan
     - events: (e.g.) transaction.created, account.updated, transfer.linked
     - accounts: account ids (filters transactions by `account` and accounts by `id`)
+    - payees: payee ids
+    - categories: category ids
+    - categoryGroups: category group ids
+    - rules: rule ids
+    - useRegex: if true, interpret `entities` and `events` as regular expressions (comma-separated patterns). Accepted values: true/1/yes/on and false/0/no/off (case-insensitive). Invalid regex patterns return HTTP 400 with an error message.
 - WebSocket: ws://host:PORT/ws?entities=...&events=...&accounts=... (same auth via Authorization: Bearer <token>, Origin checked against CORS allowlist)
+  - Same filters as SSE, including `useRegex` with the same boolean values and strict regex validation.
   - Runtime updates: send a JSON message to update filters
     - { "type": "filter", "entities": "transaction,account", "events": "transaction.updated", "accounts": "acc_1,acc_2", "useRegex": false }
-    - Acks: { "type": "filter.ack", "ok": true }
+    - Acks: { "type": "filter.ack", "ok": true } on success; { "type": "filter.ack", "ok": false, "error": "..." } on invalid filters (e.g., bad regex).
+  - If the initial WS query contains an invalid regex, the server sends { "type": "error", "error": "..." } and closes the connection.
     - Ping/pong: send { "type": "ping" } and receive { "type": "pong", ts }
 - GET /healthz: liveness check.
 - POST /nudge (optional): triggers an immediate scan.

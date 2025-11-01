@@ -56,3 +56,18 @@ function formatYMD(d) {
 }
 
 module.exports = { openBudget, closeBudget, formatYMD };
+/**
+ * Parse common boolean string values. Accepts: true/false, 1/0, yes/no, on/off (case-insensitive).
+ * Returns boolean, defaulting to false for unrecognized values.
+ */
+function parseBool(val) {
+  if (typeof val === 'boolean') return val;
+  const s = String(val || '')
+    .trim()
+    .toLowerCase();
+  if (s === 'true' || s === '1' || s === 'yes' || s === 'on') return true;
+  if (s === 'false' || s === '0' || s === 'no' || s === 'off') return false;
+  return false;
+}
+
+module.exports.parseBool = parseBool;

@@ -8,7 +8,7 @@ const http = require('http');
 const cors = require('cors');
 const { WebSocketServer } = require('ws');
 const logger = require('./logger');
-const { openBudget, closeBudget } = require('./utils');
+const { openBudget, closeBudget, parseBool } = require('./utils');
 const { EventBus } = require('./events');
 const { Scanner } = require('./scanner');
 const { compileFilter } = require('./filter');
@@ -65,17 +65,24 @@ async function startServer({
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders?.();
     const lastId = req.header('Last-Event-ID') || undefined;
-    const filter = compileFilter({
-      entities: req.query.entities,
-      events: req.query.events,
-      accounts: req.query.accounts,
-      payees: req.query.payees,
-      categories: req.query.categories,
-      categoryGroups: req.query.categoryGroups,
-      rules: req.query.rules,
-      useRegex: req.query.useRegex === 'true' || req.query.useRegex === '1',
-    });
-    bus.addClient(res, lastId, filter);
+    try {
+      const filter = compileFilter(
+        {
+          entities: req.query.entities,
+          events: req.query.events,
+          accounts: req.query.accounts,
+          payees: req.query.payees,
+          categories: req.query.categories,
+          categoryGroups: req.query.categoryGroups,
+          rules: req.query.rules,
+          useRegex: parseBool(req.query.useRegex),
+        },
+        { strictRegex: true },
+      );
+      bus.addClient(res, lastId, filter);
+    } catch (e) {
+      res.status(400).json({ error: e?.message || 'Invalid filters' });
+    }
   });
 
   app.post('/nudge', requireAuth, express.json(), async (req, res) => {
@@ -115,18 +122,32 @@ async function startServer({
     let filter = () => true;
     try {
       const u = new URL(req.url, 'http://localhost');
-      filter = compileFilter({
-        entities: u.searchParams.get('entities') || undefined,
-        events: u.searchParams.get('events') || undefined,
-        accounts: u.searchParams.get('accounts') || undefined,
-        payees: u.searchParams.get('payees') || undefined,
-        categories: u.searchParams.get('categories') || undefined,
-        categoryGroups: u.searchParams.get('categoryGroups') || undefined,
-        rules: u.searchParams.get('rules') || undefined,
-        useRegex: (u.searchParams.get('useRegex') || 'false') === 'true',
-      });
+      filter = compileFilter(
+        {
+          entities: u.searchParams.get('entities') || undefined,
+          events: u.searchParams.get('events') || undefined,
+          accounts: u.searchParams.get('accounts') || undefined,
+          payees: u.searchParams.get('payees') || undefined,
+          categories: u.searchParams.get('categories') || undefined,
+          categoryGroups: u.searchParams.get('categoryGroups') || undefined,
+          rules: u.searchParams.get('rules') || undefined,
+          useRegex: parseBool(u.searchParams.get('useRegex')),
+        },
+        { strictRegex: true },
+      );
     } catch (e) {
-      /* ignore */ void 0;
+      try {
+        ws.send(
+          JSON.stringify({
+            type: 'error',
+            error: e?.message || 'Invalid filters',
+          }),
+        );
+      } catch (err) {
+        /* ignore */ void 0;
+      }
+      ws.close(1008, 'Invalid filters');
+      return;
     }
     const client = { ws, filter };
     wsClients.add(client);
@@ -142,17 +163,30 @@ async function startServer({
       try {
         const data = JSON.parse(msg.toString());
         if (data && (data.type === 'filter' || data.type === 'subscribe')) {
-          client.filter = compileFilter({
-            entities: data.entities,
-            events: data.events,
-            accounts: data.accounts,
-            payees: data.payees,
-            categories: data.categories,
-            categoryGroups: data.categoryGroups,
-            rules: data.rules,
-            useRegex: !!data.useRegex,
-          });
-          ws.send(JSON.stringify({ type: 'filter.ack', ok: true }));
+          try {
+            client.filter = compileFilter(
+              {
+                entities: data.entities,
+                events: data.events,
+                accounts: data.accounts,
+                payees: data.payees,
+                categories: data.categories,
+                categoryGroups: data.categoryGroups,
+                rules: data.rules,
+                useRegex: parseBool(data.useRegex),
+              },
+              { strictRegex: true },
+            );
+            ws.send(JSON.stringify({ type: 'filter.ack', ok: true }));
+          } catch (e) {
+            ws.send(
+              JSON.stringify({
+                type: 'filter.ack',
+                ok: false,
+                error: e?.message || 'Invalid filters',
+              }),
+            );
+          }
         } else if (data && data.type === 'ping') {
           ws.send(JSON.stringify({ type: 'pong', ts: Date.now() }));
         }

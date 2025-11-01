@@ -7,30 +7,43 @@ function toSet(str) {
   return arr.length ? new Set(arr) : null;
 }
 
-function toRegexList(str) {
+function toRegexList(str, { strict = false } = {}) {
   if (!str) return null;
   const arr = String(str)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
-  try {
-    const regs = arr.map((p) => new RegExp(p));
-    return regs.length ? regs : null;
-  } catch {
-    return null;
+  const regs = [];
+  for (const p of arr) {
+    try {
+      regs.push(new RegExp(p));
+    } catch (e) {
+      if (strict) {
+        const msg = e && e.message ? e.message : 'invalid regex';
+        const err = new Error(`Invalid regex pattern: ${p} (${msg})`);
+        err.code = 'INVALID_REGEX';
+        throw err;
+      } else {
+        return null;
+      }
+    }
   }
+  return regs.length ? regs : null;
 }
 
-function compileFilter({
-  entities,
-  events,
-  accounts,
-  payees,
-  categories,
-  categoryGroups,
-  rules,
-  useRegex,
-}) {
+function compileFilter(
+  {
+    entities,
+    events,
+    accounts,
+    payees,
+    categories,
+    categoryGroups,
+    rules,
+    useRegex,
+  },
+  { strictRegex = false } = {},
+) {
   const entSet = useRegex ? null : toSet(entities);
   const evtSet = useRegex ? null : toSet(events);
   const acctSet = toSet(accounts);
@@ -38,8 +51,12 @@ function compileFilter({
   const catSet = toSet(categories);
   const catGroupSet = toSet(categoryGroups);
   const ruleSet = toSet(rules);
-  const entRegs = useRegex ? toRegexList(entities) : null;
-  const evtRegs = useRegex ? toRegexList(events) : null;
+  const entRegs = useRegex
+    ? toRegexList(entities, { strict: strictRegex })
+    : null;
+  const evtRegs = useRegex
+    ? toRegexList(events, { strict: strictRegex })
+    : null;
   return (ev) => {
     if (entSet && !entSet.has(ev.entity)) return false;
     if (entRegs && !entRegs.some((r) => r.test(ev.entity))) return false;
@@ -48,10 +65,10 @@ function compileFilter({
     if (acctSet) {
       if (ev.entity === 'transaction') {
         const acc = ev.after?.account || ev.before?.account || null;
-        if (!acc || !acctSet.has(acc)) return false;
+        if (!acc || !acctSet.has(String(acc))) return false;
       } else if (ev.entity === 'account') {
         const id = ev.after?.id || ev.before?.id || null;
-        if (!id || !acctSet.has(id)) return false;
+        if (!id || !acctSet.has(String(id))) return false;
       }
     }
     if (payeeSet) {
