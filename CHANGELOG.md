@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/rjlee/actual-events/compare/v1.0.1...v1.0.2) (2025-11-01)
+
+
+### Bug Fixes
+
+* Update Docker image reference to correct repository name ([dcf634e](https://github.com/rjlee/actual-events/commit/dcf634eb4d4f74be993aaeed9ac139c2bee60f0f))
+
 ## [1.0.1](https://github.com/rjlee/actual-events/compare/v1.0.0...v1.0.1) (2025-11-01)
 
 
