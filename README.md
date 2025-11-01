@@ -1,4 +1,4 @@
-Actual Events Sidecar
+# Actual Events
 
 Exposes Actual Budget change events over Server‑Sent Events (SSE) by periodically syncing and diffing accounts and recent transactions.
 
