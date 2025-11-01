@@ -37,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}-actual-events
+          images: ghcr.io/${{ github.repository }}
 
       - name: Compute image version
         id: get_version
@@ -66,6 +66,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}-actual-events:${{ steps.get_version.outputs.VERSION }}
-            ghcr.io/${{ github.repository }}-actual-events:latest
+            ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}:latest
           labels: ${{ steps.meta.outputs.labels }}
