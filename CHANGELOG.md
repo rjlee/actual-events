@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/rjlee/actual-events/compare/v1.1.0...v1.1.1) (2025-11-02)
+
+
+### Bug Fixes
+
+* support multiple actual-api version in build artifacts ([4c0fdf8](https://github.com/rjlee/actual-events/commit/4c0fdf866424b98372cee179812755022cf8c24f))
+
 # [1.1.0](https://github.com/rjlee/actual-events/compare/v1.0.2...v1.1.0) (2025-11-01)
 
 
