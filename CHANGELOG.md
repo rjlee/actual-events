@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/rjlee/actual-events/compare/v1.1.1...v1.1.2) (2025-11-02)
+
+
+### Bug Fixes
+
+* support actual api version specification in docker compose file ([e2634c5](https://github.com/rjlee/actual-events/commit/e2634c5a1a2ea15822203bfbad62cac0b1cc778f))
+
 ## [1.1.1](https://github.com/rjlee/actual-events/compare/v1.1.0...v1.1.1) (2025-11-02)
 
 
