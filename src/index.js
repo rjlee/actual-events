@@ -17,7 +17,10 @@ const { originAllowed, authorizeHeader } = require('./security');
 // compileFilter imported from ./filter for testability without requiring express/ws
 
 async function startServer({
-  port = parseInt(process.env.PORT || process.env.port || '4000', 10),
+  port = parseInt(
+    process.env.HTTP_PORT || process.env.PORT || process.env.port || '4000',
+    10,
+  ),
   lookbackDays = parseInt(process.env.LOOKBACK_DAYS || '60', 10),
   scanIntervalMs = parseInt(process.env.SCAN_INTERVAL_MS || '15000', 10),
   skipBudget = false,
