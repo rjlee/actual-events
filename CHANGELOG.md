@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/rjlee/actual-events/compare/v1.1.3...v1.1.4) (2025-11-03)
+
+
+### Bug Fixes
+
+* fix healthcheck to respect HTTP_PORT ([6cde6b0](https://github.com/rjlee/actual-events/commit/6cde6b02666d6cec3ac277918be5371f3e23b446))
+
 ## [1.1.3](https://github.com/rjlee/actual-events/compare/v1.1.2...v1.1.3) (2025-11-03)
 
 
