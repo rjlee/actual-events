@@ -24,7 +24,7 @@ LABEL org.opencontainers.image.revision="$GIT_SHA" \
       org.opencontainers.image.version="$APP_VERSION" \
       io.actual.api.version="$ACTUAL_API_VERSION"
 
-EXPOSE 4000
+EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["node","-e","require('http').get('http://localhost:4000/healthz',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+  CMD node -e "const p=process.env.HTTP_PORT||'3000';require('http').get('http://localhost:'+p+'/healthz',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
 ENTRYPOINT ["node", "src/index.js"]
