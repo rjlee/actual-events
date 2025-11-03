@@ -60,9 +60,9 @@ Config
 - BUDGET_DIR: where to cache the budget locally (default ./data/budget)
 - LOOKBACK_DAYS: transaction window to scan (default 60)
 - SCAN_INTERVAL_MS: scan interval in ms (default 15000)
-- PORT or HTTP_PORT: HTTP port (default 4000)
+- HTTP_PORT: HTTP port (default 3000)
 - LOG_LEVEL: error|warn|info|debug (default info)
-- AUTH_TOKEN: optional Bearer token required for /events, /nudge, and WS (omit to disable auth)
+- EVENTS_AUTH_TOKEN: optional Bearer token required for /events, /nudge, and WS (omit to disable auth)
 - CORS_ORIGINS: comma-separated origins allowlist for CORS and WS Origin checks (use \* to allow any)
 
 Run

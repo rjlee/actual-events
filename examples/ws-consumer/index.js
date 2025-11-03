@@ -2,7 +2,7 @@ require('dotenv').config();
 const WebSocket = require('ws');
 
 const HOST = process.env.EVENTS_HOST || 'http://localhost:4000';
-const TOKEN = process.env.AUTH_TOKEN; // optional
+const TOKEN = process.env.EVENTS_AUTH_TOKEN; // optional
 
 // Optional initial query filters
 const ENTITIES = process.env.ENTITIES; // e.g. 'transaction,account'

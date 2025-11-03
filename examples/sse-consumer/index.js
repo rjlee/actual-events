@@ -2,7 +2,7 @@ require('dotenv').config();
 const EventSource = require('eventsource');
 
 const HOST = process.env.EVENTS_HOST || 'http://localhost:4000';
-const TOKEN = process.env.AUTH_TOKEN; // optional
+const TOKEN = process.env.EVENTS_AUTH_TOKEN; // optional
 const ENTITIES = process.env.ENTITIES; // e.g. 'transaction,account'
 const EVENTS = process.env.EVENTS; // e.g. '^transaction\\.' (works only if server-side useRegex=true)
 const ACCOUNTS = process.env.ACCOUNTS; // comma-separated account ids

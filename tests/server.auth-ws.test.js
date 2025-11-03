@@ -38,7 +38,7 @@ maybe('HTTP auth and WS origin/auth', () => {
     // Lazy-require to avoid throwing if express/ws not present
     // eslint-disable-next-line global-require
     ({ startServer } = require('../src/index'));
-    process.env.AUTH_TOKEN = token;
+    process.env.EVENTS_AUTH_TOKEN = token;
     process.env.CORS_ORIGINS = 'http://allowed.local';
     const started = await startServer({
       port: 0,

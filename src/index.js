@@ -18,7 +18,7 @@ const { originAllowed, authorizeHeader } = require('./security');
 
 async function startServer({
   port = parseInt(
-    process.env.HTTP_PORT || process.env.PORT || process.env.port || '4000',
+    process.env.HTTP_PORT || process.env.PORT || process.env.port || '3000',
     10,
   ),
   lookbackDays = parseInt(process.env.LOOKBACK_DAYS || '60', 10),
@@ -51,7 +51,7 @@ async function startServer({
   app.use(cors(corsOptions));
 
   const requireAuth = (req, res, next) => {
-    const token = process.env.AUTH_TOKEN;
+    const token = process.env.EVENTS_AUTH_TOKEN;
     if (!token) return next();
     if (authorizeHeader(req.headers['authorization'] || '', token))
       return next();
@@ -108,7 +108,7 @@ async function startServer({
       socket.destroy();
       return;
     }
-    const expected = process.env.AUTH_TOKEN;
+    const expected = process.env.EVENTS_AUTH_TOKEN;
     if (expected) {
       if (!authorizeHeader(headers['authorization'] || '', expected)) {
         socket.destroy();

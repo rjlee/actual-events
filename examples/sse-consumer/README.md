@@ -11,7 +11,7 @@ Setup
 ```
 EVENTS_HOST=http://localhost:4000
 # If your server requires a bearer token
-# AUTH_TOKEN=your-token
+# EVENTS_AUTH_TOKEN=your-token
 
 # Optional filters
 # ENTITIES=transaction,account
