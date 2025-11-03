@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/rjlee/actual-events/compare/v1.1.2...v1.1.3) (2025-11-03)
+
+
+### Bug Fixes
+
+* Changing AUTH_TOKEN specification ([44c513e](https://github.com/rjlee/actual-events/commit/44c513e4972e335b8e6fe1baf96f73f2d3b9627d))
+* formatting issue ([e75c621](https://github.com/rjlee/actual-events/commit/e75c62140269fb15d7c721abb25ee4219a037ac1))
+
 ## [1.1.2](https://github.com/rjlee/actual-events/compare/v1.1.1...v1.1.2) (2025-11-02)
 
 
