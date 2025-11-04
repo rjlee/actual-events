@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/rjlee/actual-events/compare/v1.1.5...v1.1.6) (2025-11-04)
+
+
+### Bug Fixes
+
+* fixing workflow file ([65579f1](https://github.com/rjlee/actual-events/commit/65579f1c8ac3f18b464881f7898e4bdba7f97b4d))
+
 ## [1.1.5](https://github.com/rjlee/actual-events/compare/v1.1.4...v1.1.5) (2025-11-04)
 
 
