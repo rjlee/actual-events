@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/rjlee/actual-events/compare/v1.1.7...v1.1.8) (2025-11-04)
+
+
+### Bug Fixes
+
+* move to alpine base image ([19f7e1f](https://github.com/rjlee/actual-events/commit/19f7e1fe6b7dd92a6f4131dc52492226c1492385))
+
 ## [1.1.7](https://github.com/rjlee/actual-events/compare/v1.1.6...v1.1.7) (2025-11-04)
 
 
