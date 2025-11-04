@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/rjlee/actual-events/compare/v1.1.8...v1.1.9) (2025-11-04)
+
+
+### Bug Fixes
+
+* resolved Dockerfile build issues ([8230fc1](https://github.com/rjlee/actual-events/commit/8230fc113afd9811b01fcf37862579379ce7b6b3))
+
 ## [1.1.8](https://github.com/rjlee/actual-events/compare/v1.1.7...v1.1.8) (2025-11-04)
 
 
