@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:22-slim AS base
 WORKDIR /app
 
 # Accept Actual API version and metadata as build args
