@@ -6,14 +6,22 @@ ARG ACTUAL_API_VERSION
 ARG GIT_SHA
 ARG APP_VERSION
 
-# Install production dependencies; allow overriding @actual-app/api when provided
+# Install build deps for native modules (better-sqlite3) and production deps;
+# allow overriding @actual-app/api when provided
 COPY package*.json ./
 ENV HUSKY=0
-RUN if [ -n "$ACTUAL_API_VERSION" ]; then \
+RUN set -eux; \
+    if command -v apk >/dev/null 2>&1; then \
+      apk add --no-cache python3 make g++; \
+    else \
+      apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*; \
+    fi; \
+    npm config set python "/usr/bin/python3"; \
+    if [ -n "$ACTUAL_API_VERSION" ]; then \
       npm pkg set dependencies.@actual-app/api=$ACTUAL_API_VERSION && \
       npm install --package-lock-only --no-audit --no-fund; \
-    fi \
-    && npm ci --omit=dev --no-audit --no-fund
+    fi; \
+    npm ci --omit=dev --no-audit --no-fund
 
 # Copy source
 COPY src ./src
