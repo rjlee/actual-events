@@ -3,3 +3,4 @@ coverage/
 data/
 CHANGELOG.md
 examples/
+.github/workflows/

@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 WORKDIR /app
 
 # Accept Actual API version and metadata as build args
@@ -8,11 +8,12 @@ ARG APP_VERSION
 
 # Install production dependencies; allow overriding @actual-app/api when provided
 COPY package*.json ./
+ENV HUSKY=0
 RUN if [ -n "$ACTUAL_API_VERSION" ]; then \
       npm pkg set dependencies.@actual-app/api=$ACTUAL_API_VERSION && \
-      npm install --package-lock-only --no-audit --no-fund; \
+      npm install --package-lock-only --no-audit --no-fund --ignore-scripts; \
     fi && \
-    npm ci --only=production --no-audit --no-fund
+    npm ci --omit=dev --no-audit --no-fund --ignore-scripts
 
 # Copy source
 COPY src ./src

@@ -108,11 +108,10 @@ Daemon mode (background)
 
 Actual Budget's server and `@actual-app/api` should be compatible. This project publishes API‑specific images so you can pick an image that matches your server:
 
-- Exact pin: `ghcr.io/rjlee/actual-events:api-25.2.1`
-- Minor alias: `ghcr.io/rjlee/actual-events:api-25.2`
 - Major alias: `ghcr.io/rjlee/actual-events:api-25`
+- Rolling latest (highest supported API major): `ghcr.io/rjlee/actual-events:latest`
 
-The Dockerfile accepts a build arg `ACTUAL_API_VERSION` and CI publishes images for the latest patch of the last two API majors (stable only, no nightly/rc/edge). Each build also publishes rolling aliases for the minor and major lines. Images include labels:
+The Dockerfile accepts a build arg `ACTUAL_API_VERSION` and CI publishes images for the latest patch of the last three stable API majors (no nightly/rc/edge). Images include labels:
 
 - `io.actual.api.version` — the `@actual-app/api` version
 - `org.opencontainers.image.revision` — git SHA
@@ -120,24 +119,23 @@ The Dockerfile accepts a build arg `ACTUAL_API_VERSION` and CI publishes images 
 
 ### Examples
 
-- Run with a specific API line: `docker run --rm --env-file .env ghcr.io/rjlee/actual-events:api-25`
-- Pin exact API patch: `docker run --rm --env-file .env ghcr.io/rjlee/actual-events:api-25.2.1`
+- Run with a specific API major: `docker run --rm --env-file .env ghcr.io/rjlee/actual-events:api-25`
+- Follow the newest supported API major: `docker run --rm --env-file .env ghcr.io/rjlee/actual-events:latest`
 
 ## Release Strategy
 
 - **App releases (semantic‑release):**
-  - Tags: `<app-version>`, `<major>.<minor>`, `<major>`, `latest`.
+  - Manage versioning and changelog in this repo (no separate Docker tags for app versions).
 - **API matrix images (compatibility):**
-  - Scope: latest patch of the last two stable `@actual-app/api` majors.
-  - Tags per image: `api-<patch>`, `api-<minor>`, `api-<major>`.
+  - Scope: latest patch of the last three stable `@actual-app/api` majors.
+  - Tags per image: `api-<major>` for each supported major; `latest` points to the highest major.
 
 ## Choosing an Image Tag
 
 - **You know your server’s API major (recommended):** use `api-<MAJOR>` (e.g. `api-25`).
-- **You need a specific API patch:** use `api-<MAJOR.MINOR.PATCH>`.
-- **Only care about the app release:** use `<app-version>` or `latest`.
+- **You want to track the newest supported major:** use `latest`.
 
 ### Compose Defaults
 
 - The provided `docker-compose.yml` uses `api-${ACTUAL_API_MAJOR}` by default; set `ACTUAL_API_MAJOR` in your `.env` (e.g. `25`).
-- Alternatively, use `:api-stable` to always follow the newest supported API major automatically.
+- Alternatively, use `:latest` to always follow the newest supported API major automatically.
