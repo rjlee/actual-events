@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/rjlee/actual-events/compare/v1.1.6...v1.1.7) (2025-11-04)
+
+
+### Bug Fixes
+
+* move base image to node 22 ([4aa57b0](https://github.com/rjlee/actual-events/commit/4aa57b000e8d6806451c14ee729b3f5164774622))
+
 ## [1.1.6](https://github.com/rjlee/actual-events/compare/v1.1.5...v1.1.6) (2025-11-04)
 
 
