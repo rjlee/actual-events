@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/rjlee/actual-events/compare/v1.1.4...v1.1.5) (2025-11-04)
+
+
+### Bug Fixes
+
+* adopt reusable workflows; gate release on CI; nightly Docker build; add GHCR cleanup; harden Dockerfile; update README ([0f00672](https://github.com/rjlee/actual-events/commit/0f006728f3e7a8ca32a3b0bd32ed954b66d1934d))
+
 ## [1.1.4](https://github.com/rjlee/actual-events/compare/v1.1.3...v1.1.4) (2025-11-03)
 
 
