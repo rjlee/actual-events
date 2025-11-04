@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:22-slim AS base
 WORKDIR /app
 
 # Accept Actual API version and metadata as build args
@@ -11,9 +11,9 @@ COPY package*.json ./
 ENV HUSKY=0
 RUN if [ -n "$ACTUAL_API_VERSION" ]; then \
       npm pkg set dependencies.@actual-app/api=$ACTUAL_API_VERSION && \
-      npm install --package-lock-only --no-audit --no-fund --ignore-scripts; \
-    fi && \
-    npm ci --omit=dev --no-audit --no-fund --ignore-scripts
+      npm install --package-lock-only --no-audit --no-fund; \
+    fi \
+    && npm ci --omit=dev --no-audit --no-fund
 
 # Copy source
 COPY src ./src
