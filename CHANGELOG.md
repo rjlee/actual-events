@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/rjlee/actual-events/compare/v1.1.9...v1.1.10) (2025-11-04)
+
+
+### Bug Fixes
+
+* FIxing build for older actual-api releases ([9ab43c6](https://github.com/rjlee/actual-events/commit/9ab43c6715bb08c941073e9ceed7a8535d3a22bb))
+
 ## [1.1.9](https://github.com/rjlee/actual-events/compare/v1.1.8...v1.1.9) (2025-11-04)
 
 
