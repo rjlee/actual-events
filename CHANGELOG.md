@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/rjlee/actual-events/compare/v1.1.10...v1.1.11) (2025-11-04)
+
+
+### Bug Fixes
+
+* fixing python fallback in Dockerfile ([cabe898](https://github.com/rjlee/actual-events/commit/cabe89896d6749db256b686775fb6bd98ef7fd03))
+
 ## [1.1.10](https://github.com/rjlee/actual-events/compare/v1.1.9...v1.1.10) (2025-11-04)
 
 
