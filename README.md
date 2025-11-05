@@ -118,10 +118,8 @@ We publish stable `@actual-app/api` versions (exact semver) plus `latest` (alias
 
 ## Choosing an Image Tag
 
-- **You know your server’s API major (recommended):** use `api-<MAJOR>` (e.g. `api-25`).
-- **You want to track the newest supported major:** use `latest`.
+- Always pick a semver tag that matches your Actual server’s `@actual-app/api` version, or use `latest` if you want the newest supported version automatically.
 
 ### Compose Defaults
 
-- The provided stack uses a single `ACTUAL_IMAGE_TAG` for all services (e.g., `26.1.0` or `latest`).
-- Alternatively, use `:latest` to always follow the newest supported API major automatically.
+- The provided stack uses a single `ACTUAL_IMAGE_TAG` for all services (e.g., `26.1.0` or `latest`); set it in your `.env` or leave unset for `latest`.
