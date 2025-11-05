@@ -1,3 +1,10 @@
+## [1.1.12](https://github.com/rjlee/actual-events/compare/v1.1.11...v1.1.12) (2025-11-05)
+
+
+### Bug Fixes
+
+* drop majors-window; use stable semver tags + latest; docs with pinned 25.11.0 ([1c1005d](https://github.com/rjlee/actual-events/commit/1c1005d8dc887e33532443e4d0a9baf0ba80b191))
+
 ## [1.1.11](https://github.com/rjlee/actual-events/compare/v1.1.10...v1.1.11) (2025-11-04)
 
 
