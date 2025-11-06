@@ -41,4 +41,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD node -e "const p=process.env.HTTP_PORT||'3000';require('http').get('http://localhost:'+p+'/healthz',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
 
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["node", "src/index.js"]
