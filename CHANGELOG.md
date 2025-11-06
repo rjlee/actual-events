@@ -1,3 +1,10 @@
+## [1.1.16](https://github.com/rjlee/actual-events/compare/v1.1.15...v1.1.16) (2025-11-06)
+
+
+### Bug Fixes
+
+* improved signal heandling and structured logging ([2d423b8](https://github.com/rjlee/actual-events/commit/2d423b89e2699cb0f8384679f605ac506d57cc80))
+
 ## [1.1.15](https://github.com/rjlee/actual-events/compare/v1.1.14...v1.1.15) (2025-11-06)
 
 
