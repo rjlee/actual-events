@@ -1,3 +1,10 @@
+## [1.1.15](https://github.com/rjlee/actual-events/compare/v1.1.14...v1.1.15) (2025-11-06)
+
+
+### Bug Fixes
+
+* Added tests and standardised jest configuration ([e5cf29f](https://github.com/rjlee/actual-events/commit/e5cf29f1d0313a9a7dff4cd8e77d061af28c481b))
+
 ## [1.1.14](https://github.com/rjlee/actual-events/compare/v1.1.13...v1.1.14) (2025-11-05)
 
 
