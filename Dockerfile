@@ -37,8 +37,10 @@ LABEL org.opencontainers.image.revision="$GIT_SHA" \
 
 ENV NODE_ENV=production
 
+RUN chmod +x /app/bin/healthcheck.sh
+
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "const p=process.env.HTTP_PORT||'3000';require('http').get('http://localhost:'+p+'/healthz',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD /app/bin/healthcheck.sh
 
 ENTRYPOINT ["node", "src/index.js"]

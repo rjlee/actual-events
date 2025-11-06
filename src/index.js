@@ -58,10 +58,6 @@ async function startServer({
     res.status(401).json({ error: 'Unauthorized' });
   };
 
-  app.get('/healthz', (req, res) => {
-    res.json({ ok: true });
-  });
-
   app.get('/events', requireAuth, (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
