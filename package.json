@@ -8,7 +8,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node src/index.js --port 4001 --scan-interval-ms 10000",
-    "test": "LOG_LEVEL=silent jest --passWithNoTests",
+    "test": "jest --passWithNoTests",
+    "test:coverage": "JEST_COVERAGE=true npm test",
+    "test:watch": "jest --watch",
     "prepare": "husky install || true",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -22,7 +24,8 @@
     "dotenv": "^16.5.0",
     "express": "^4.19.2",
     "cors": "^2.8.5",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "pino": "^8.0.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
