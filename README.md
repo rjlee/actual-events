@@ -1,20 +1,19 @@
 # actual-events
 
-Stream Actual Budget changes over Server-Sent Events (SSE) and WebSockets by diffing consecutive syncs. Downstream services (e.g., auto-reconcile, auto-categorise) can react instantly without polling.
+Stream Actual Budget changes over Server-Sent Events (SSE) and WebSockets by diffing consecutive syncs. Downstream services can subscribe for near real-time updates without polling.
 
 ## Features
 
-- SSE endpoint (`/events`) with filterable event types and resumable `Last-Event-ID`.
-- WebSocket endpoint (`/ws`) for duplex filter updates and ping/pong keepalive.
+- `/events` SSE endpoint with resumable `Last-Event-ID` and rich filtering.
+- `/ws` WebSocket endpoint for bidirectional filter updates and ping/pong keepalive.
 - Optional `/nudge` endpoint to trigger an immediate scan.
-- Filters by entity, event type, account, payee, category, rule, with regex support.
-- Docker image with health check and budget cache volume.
+- Docker image with built-in health check and persistent budget cache volume.
 
 ## Requirements
 
-- Node.js ≥ 20.
-- Actual Budget server + credentials.
-- Lookback window (default 60 days) suitable for your dataset.
+- Node.js ≥ 22.
+- Actual Budget server credentials (`ACTUAL_SERVER_URL`, `ACTUAL_PASSWORD`, `ACTUAL_SYNC_ID`).
+- Suitable lookback window (`LOOKBACK_DAYS`) for your dataset and import cadence.
 
 ## Installation
 
@@ -42,44 +41,48 @@ docker run -d --env-file .env \
   actual-events
 ```
 
-Prebuilt images: `ghcr.io/rjlee/actual-events:<tag>`.
+Published images live at `ghcr.io/rjlee/actual-events:<tag>` (see [Image tags](#image-tags)).
 
 ## Configuration
 
-- `.env` – required credentials and server options (`ACTUAL_SERVER_URL`, `ACTUAL_PASSWORD`, `ACTUAL_SYNC_ID`, etc.).
-- `config.yaml`/`config.json` – optional defaults (see `config.example.yaml`).
+- `.env` – primary configuration, copy from `.env.example`.
+- `config.yaml` / `config.yml` / `config.json` – optional defaults, copy from `config.example.yaml`.
 
 Precedence: CLI flags > environment variables > config file.
 
-Common settings:
-
-| Setting             | Description                            | Default         |
-| ------------------- | -------------------------------------- | --------------- |
-| `HTTP_PORT`         | HTTP port                              | `3000`          |
-| `BUDGET_DIR`        | Local cache directory                  | `./data/budget` |
-| `LOOKBACK_DAYS`     | Transaction diff window                | `60`            |
-| `SCAN_INTERVAL_MS`  | Periodic scan interval                 | `15000`         |
-| `EVENTS_AUTH_TOKEN` | Optional Bearer auth for all endpoints | unset           |
-| `CORS_ORIGINS`      | Comma-separated allowlist, `*` allowed | `*`             |
+| Setting             | Description                                       | Default         |
+| ------------------- | ------------------------------------------------- | --------------- |
+| `BUDGET_DIR`        | Budget cache directory                            | `./data/budget` |
+| `LOOKBACK_DAYS`     | Historical window to diff for changes             | `60`            |
+| `SCAN_INTERVAL_MS`  | Periodic scan interval in milliseconds            | `15000`         |
+| `HTTP_PORT`         | HTTP listen port                                  | `3000`          |
+| `LOG_LEVEL`         | Pino log level                                    | `info`          |
+| `EVENTS_AUTH_TOKEN` | Bearer token required for SSE/WS/nudge endpoints  | unset           |
+| `CORS_ORIGINS`      | Comma-separated CORS allowlist (`*` to allow all) | `*`             |
 
 ## Usage
 
-### Local run
+### CLI modes
 
-```bash
-npm start           # foreground
-npm start -- --daemonize --pid-file ./data/events.pid --log-file ./data/events.log
-```
-
-When daemonised, stop via `kill "$(cat ./data/events.pid)"`.
+- Foreground server: `npm start`
+- Daemonised server: `npm start -- --daemonize --pid-file ./data/events.pid --log-file ./data/events.log`
 
 ### Endpoints
 
-- `GET /events` – SSE stream. Supports comma-separated filters (`entities`, `events`, `accounts`, `payees`, `categories`, `categoryGroups`, `rules`) and `useRegex=true/false`.
-- `GET /ws` – WebSocket stream with the same filters. Runtime filter updates use `{ "type": "filter", ... }`.
-- `POST /nudge` – Trigger an on-demand scan (requires auth if enabled).
+- `GET /events` – SSE stream with filters (`entities`, `events`, `accounts`, `payees`, `categories`, `categoryGroups`, `rules`) and optional `useRegex=true`.
+- `GET /ws` – WebSocket stream; send `{ "type": "filter", ... }` to update subscriptions.
+- `POST /nudge` – Trigger an immediate diff scan (requires auth when `EVENTS_AUTH_TOKEN` set).
 
-See [`EVENTS.md`](EVENTS.md) for event payload reference.
+See [`EVENTS.md`](EVENTS.md) for payload reference.
+
+### Docker
+
+```bash
+docker run --rm --env-file .env \
+  -p 4000:3000 \
+  -v "$(pwd)/data:/app/data" \
+  ghcr.io/rjlee/actual-events:latest
+```
 
 ## Testing & linting
 
@@ -91,28 +94,12 @@ npm run format
 npm run format:check
 ```
 
-## Docker
-
-```bash
-# Latest image
-docker pull ghcr.io/rjlee/actual-events:latest
-
-# Run with env file
-docker run --rm --env-file .env \
-  -p 4000:3000 \
-  -v "$(pwd)/data:/app/data" \
-  ghcr.io/rjlee/actual-events:latest
-```
-
 ## Image tags
 
-- `ghcr.io/rjlee/actual-events:<semver>` – pinned to a specific Actual API version.
-- `ghcr.io/rjlee/actual-events:latest` – newest supported release.
+- `ghcr.io/rjlee/actual-events:<semver>` – pinned to a specific `@actual-app/api` release.
+- `ghcr.io/rjlee/actual-events:latest` – highest supported API version.
 
-## Tips
-
-- Use `SCAN_INTERVAL_MS=0` and rely solely on `/nudge` for on-demand sync triggers.
-- Combine with Docker Compose and set `ACTUAL_IMAGE_TAG` to pin all services to matching API binaries.
+See [rjlee/actual-auto-ci](https://github.com/rjlee/actual-auto-ci) for tagging policy and release automation.
 
 ## License
 
