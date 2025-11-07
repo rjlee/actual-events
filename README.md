@@ -53,14 +53,14 @@ Precedence: CLI flags > environment variables > config file.
 
 Common settings:
 
-| Setting | Description | Default |
-| --- | --- | --- |
-| `HTTP_PORT` | HTTP port | `3000` |
-| `BUDGET_DIR` | Local cache directory | `./data/budget` |
-| `LOOKBACK_DAYS` | Transaction diff window | `60` |
-| `SCAN_INTERVAL_MS` | Periodic scan interval | `15000` |
-| `EVENTS_AUTH_TOKEN` | Optional Bearer auth for all endpoints | unset |
-| `CORS_ORIGINS` | Comma-separated allowlist, `*` allowed | `*` |
+| Setting             | Description                            | Default         |
+| ------------------- | -------------------------------------- | --------------- |
+| `HTTP_PORT`         | HTTP port                              | `3000`          |
+| `BUDGET_DIR`        | Local cache directory                  | `./data/budget` |
+| `LOOKBACK_DAYS`     | Transaction diff window                | `60`            |
+| `SCAN_INTERVAL_MS`  | Periodic scan interval                 | `15000`         |
+| `EVENTS_AUTH_TOKEN` | Optional Bearer auth for all endpoints | unset           |
+| `CORS_ORIGINS`      | Comma-separated allowlist, `*` allowed | `*`             |
 
 ## Usage
 
