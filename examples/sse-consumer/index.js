@@ -26,7 +26,7 @@ es.onmessage = (msg) => {
   try {
     const ev = JSON.parse(msg.data);
     console.log(`[${ev.type}]`, ev);
-  } catch (e) {
+  } catch {
     console.log('raw:', msg.data);
   }
 };

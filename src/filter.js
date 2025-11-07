@@ -17,15 +17,14 @@ function toRegexList(str, { strict = false } = {}) {
   for (const p of arr) {
     try {
       regs.push(new RegExp(p));
-    } catch (e) {
+    } catch (err) {
       if (strict) {
-        const msg = e && e.message ? e.message : 'invalid regex';
-        const err = new Error(`Invalid regex pattern: ${p} (${msg})`);
-        err.code = 'INVALID_REGEX';
-        throw err;
-      } else {
-        return null;
+        const message = err?.message || 'invalid regex';
+        const invalid = new Error(`Invalid regex pattern: ${p} (${message})`);
+        invalid.code = 'INVALID_REGEX';
+        throw invalid;
       }
+      return null;
     }
   }
   return regs.length ? regs : null;

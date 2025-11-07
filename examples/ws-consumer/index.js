@@ -41,11 +41,11 @@ ws.on('open', () => {
   setInterval(() => {
     try {
       ws.send(JSON.stringify({ type: 'ping' }));
-    } catch (e) {
+    } catch (err) {
       // Ignore transient send errors (e.g., socket not ready)
       // but surface in debug logs for troubleshooting.
       // Use console.debug to avoid noisy output in normal runs.
-      console.debug('WS ping send failed:', e && e.message ? e.message : e);
+      console.debug('WS ping send failed:', err?.message || err);
     }
   }, 30000);
   // Example: update filters at runtime from env UPDATE_* variables
@@ -78,7 +78,7 @@ ws.on('message', (data) => {
   try {
     const ev = JSON.parse(String(data));
     console.log(`[${ev.type}]`, ev);
-  } catch (e) {
+  } catch {
     console.log('raw:', String(data));
   }
 });

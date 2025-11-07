@@ -6,23 +6,20 @@ jest.mock('../src/utils', () => ({
 let supertest;
 try {
   // supertest might not be available in this harness; in CI it is installed
-  // eslint-disable-next-line global-require
   supertest = require('supertest');
-} catch (e) {
+} catch {
   supertest = null;
 }
 let WebSocket;
 try {
-  // eslint-disable-next-line global-require
   WebSocket = require('ws');
-} catch (e) {
+} catch {
   WebSocket = null;
 }
 let expressAvail = true;
 try {
-  // eslint-disable-next-line global-require
   require('express');
-} catch (e) {
+} catch {
   expressAvail = false;
 }
 
@@ -36,7 +33,6 @@ maybe('HTTP auth and WS origin/auth', () => {
   let startServer;
   beforeAll(async () => {
     // Lazy-require to avoid throwing if express/ws not present
-    // eslint-disable-next-line global-require
     ({ startServer } = require('../src/index'));
     process.env.EVENTS_AUTH_TOKEN = token;
     process.env.CORS_ORIGINS = 'http://allowed.local';
@@ -51,7 +47,7 @@ maybe('HTTP auth and WS origin/auth', () => {
     try {
       if (server) server.close(() => done());
       else done();
-    } catch (e) {
+    } catch {
       done();
     }
   });
@@ -112,7 +108,7 @@ maybe('HTTP auth and WS origin/auth', () => {
         ws.terminate();
         resolve();
       });
-      ws.on('error', (e) => reject(e));
+      ws.on('error', (err) => reject(err));
     });
   });
 });

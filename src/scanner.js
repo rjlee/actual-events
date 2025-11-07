@@ -153,8 +153,8 @@ class Scanner {
           }
         }
         this.prevPayee = currPayee;
-      } catch (e) {
-        logger.warn('payees scan failed:', e?.message || e);
+      } catch (err) {
+        logger.warn('payees scan failed:', err?.message || err);
       }
 
       // Categories & groups diff
@@ -217,8 +217,8 @@ class Scanner {
         }
         this.prevCat = currCat;
         this.prevCatGroup = currGroup;
-      } catch (e) {
-        logger.warn('categories scan failed:', e?.message || e);
+      } catch (err) {
+        logger.warn('categories scan failed:', err?.message || err);
       }
 
       // Rules diff
@@ -243,8 +243,8 @@ class Scanner {
           }
         }
         this.prevRule = currRule;
-      } catch (e) {
-        logger.warn('rules scan failed:', e?.message || e);
+      } catch (err) {
+        logger.warn('rules scan failed:', err?.message || err);
       }
 
       // Transactions diff (recent window)
@@ -259,8 +259,8 @@ class Scanner {
           for (const t of txns) {
             txMap.set(t.id, { t, f: txFingerprint(t) });
           }
-        } catch (e) {
-          logger.warn(`tx fetch failed for ${acct.name}:`, e?.message || e);
+        } catch (err) {
+          logger.warn(`tx fetch failed for ${acct.name}:`, err?.message || err);
         }
       }
       // Created/updated
@@ -340,11 +340,11 @@ class Scanner {
         this.bus.emit('scan.noop', { entity: 'scan' });
       }
       this.bus.emit('sync.completed', { entity: 'sync' });
-    } catch (e) {
-      logger.warn('scan failed:', e?.message || e);
+    } catch (err) {
+      logger.warn('scan failed:', err?.message || err);
       this.bus.emit('sync.failed', {
         entity: 'sync',
-        error: e?.message || String(e),
+        error: err?.message || String(err),
       });
     } finally {
       this.scanning = false;

@@ -22,8 +22,8 @@ class EventBus {
               res.write(`event: ${ev.type}\n`);
               res.write(`data: ${JSON.stringify(ev)}\n\n`);
             }
-          } catch (e) {
-            /* ignore */ void 0;
+          } catch {
+            /* ignore */
           }
         }
       }
@@ -51,7 +51,7 @@ class EventBus {
           client.res.write(`event: ${ev.type}\n`);
           client.res.write(`data: ${JSON.stringify(ev)}\n\n`);
         }
-      } catch (e) {
+      } catch {
         logger.debug('client write failed; dropping client');
         this.clients.delete(client);
       }
@@ -59,8 +59,8 @@ class EventBus {
     for (const fn of this.sinks) {
       try {
         fn(ev);
-      } catch (e) {
-        /* ignore */ void 0;
+      } catch {
+        /* ignore */
       }
     }
   }

@@ -79,8 +79,8 @@ async function startServer({
         { strictRegex: true },
       );
       bus.addClient(res, lastId, filter);
-    } catch (e) {
-      res.status(400).json({ error: e?.message || 'Invalid filters' });
+    } catch (err) {
+      res.status(400).json({ error: err?.message || 'Invalid filters' });
     }
   });
 
@@ -134,16 +134,16 @@ async function startServer({
         },
         { strictRegex: true },
       );
-    } catch (e) {
+    } catch (err) {
       try {
         ws.send(
           JSON.stringify({
             type: 'error',
-            error: e?.message || 'Invalid filters',
+            error: err?.message || 'Invalid filters',
           }),
         );
-      } catch (err) {
-        /* ignore */ void 0;
+      } catch {
+        /* ignore */
       }
       ws.close(1008, 'Invalid filters');
       return;
@@ -155,8 +155,8 @@ async function startServer({
       for (const ev of bus.buffer) {
         if (client.filter(ev)) ws.send(JSON.stringify(ev));
       }
-    } catch (e) {
-      /* ignore */ void 0;
+    } catch {
+      /* ignore */
     }
     ws.on('message', (msg) => {
       try {
@@ -177,20 +177,20 @@ async function startServer({
               { strictRegex: true },
             );
             ws.send(JSON.stringify({ type: 'filter.ack', ok: true }));
-          } catch (e) {
+          } catch (err) {
             ws.send(
               JSON.stringify({
                 type: 'filter.ack',
                 ok: false,
-                error: e?.message || 'Invalid filters',
+                error: err?.message || 'Invalid filters',
               }),
             );
           }
         } else if (data && data.type === 'ping') {
           ws.send(JSON.stringify({ type: 'pong', ts: Date.now() }));
         }
-      } catch (e) {
-        /* ignore */ void 0;
+      } catch {
+        /* ignore */
       }
     });
     ws.on('close', () => wsClients.delete(client));
@@ -203,8 +203,8 @@ async function startServer({
       try {
         if (client.filter(ev) && client.ws.readyState === 1)
           client.ws.send(data);
-      } catch (e) {
-        /* ignore */ void 0;
+      } catch {
+        /* ignore */
       }
     }
   });
@@ -267,8 +267,10 @@ async function main() {
         out = fd;
         err = fd;
       }
-    } catch (e) {
-      // fall back to ignoring output
+    } catch (error) {
+      logger.warn('failed to open log file, continuing without logs', {
+        error: error?.message || error,
+      });
     }
     const childArgs = argv.filter((a) => a !== '--daemonize');
     childArgs.push('--child');
@@ -295,7 +297,7 @@ async function main() {
           : path.join(process.cwd(), pidFile);
         fs.mkdirSync(path.dirname(abs), { recursive: true });
         fs.writeFileSync(abs, String(process.pid));
-      } catch (e) {
+      } catch {
         // ignore pid write errors
       }
     }
@@ -303,9 +305,8 @@ async function main() {
 }
 
 if (require.main === module) {
-  main().catch((e) => {
-    // eslint-disable-next-line no-console
-    console.error(e);
+  main().catch((err) => {
+    console.error(err);
     process.exit(1);
   });
 }

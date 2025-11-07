@@ -28,22 +28,22 @@ async function openBudget() {
     try {
       await api.downloadBudget(syncId, opts);
       hasDownloaded = true;
-    } catch (e) {
-      logger.warn('downloadBudget failed or cached:', e?.message || e);
+    } catch (err) {
+      logger.warn('downloadBudget failed or cached:', err?.message || err);
     }
   }
   try {
     await api.sync();
-  } catch (e) {
-    logger.warn('initial sync failed:', e?.message || e);
+  } catch (err) {
+    logger.warn('initial sync failed:', err?.message || err);
   }
 }
 
 async function closeBudget() {
   try {
     await api.shutdown();
-  } catch (e) {
-    logger.warn('shutdown failed:', e?.message || e);
+  } catch (err) {
+    logger.warn('shutdown failed:', err?.message || err);
   }
 }
 
