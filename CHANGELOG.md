@@ -1,3 +1,36 @@
+# 1.0.0 (2025-11-07)
+
+
+### Bug Fixes
+
+* Added tests and standardised jest configuration ([e5cf29f](https://github.com/rjlee/actual-events/commit/e5cf29f1d0313a9a7dff4cd8e77d061af28c481b))
+* adopt reusable workflows; gate release on CI; nightly Docker build; add GHCR cleanup; harden Dockerfile; update README ([0f00672](https://github.com/rjlee/actual-events/commit/0f006728f3e7a8ca32a3b0bd32ed954b66d1934d))
+* Changing AUTH_TOKEN specification ([44c513e](https://github.com/rjlee/actual-events/commit/44c513e4972e335b8e6fe1baf96f73f2d3b9627d))
+* drop majors-window; use stable semver tags + latest; docs with pinned 25.11.0 ([1c1005d](https://github.com/rjlee/actual-events/commit/1c1005d8dc887e33532443e4d0a9baf0ba80b191))
+* fix healthcheck to respect HTTP_PORT ([6cde6b0](https://github.com/rjlee/actual-events/commit/6cde6b02666d6cec3ac277918be5371f3e23b446))
+* FIxing build for older actual-api releases ([9ab43c6](https://github.com/rjlee/actual-events/commit/9ab43c6715bb08c941073e9ceed7a8535d3a22bb))
+* fixing python fallback in Dockerfile ([cabe898](https://github.com/rjlee/actual-events/commit/cabe89896d6749db256b686775fb6bd98ef7fd03))
+* fixing workflow file ([65579f1](https://github.com/rjlee/actual-events/commit/65579f1c8ac3f18b464881f7898e4bdba7f97b4d))
+* formatting issue ([e75c621](https://github.com/rjlee/actual-events/commit/e75c62140269fb15d7c721abb25ee4219a037ac1))
+* improved signal heandling and structured logging ([2d423b8](https://github.com/rjlee/actual-events/commit/2d423b89e2699cb0f8384679f605ac506d57cc80))
+* **lint:** remove unused catch parameters ([b010c55](https://github.com/rjlee/actual-events/commit/b010c55231d0156e0b3c3032070b527c0dcb12d1))
+* move base image to node 22 ([4aa57b0](https://github.com/rjlee/actual-events/commit/4aa57b000e8d6806451c14ee729b3f5164774622))
+* move to alpine base image ([19f7e1f](https://github.com/rjlee/actual-events/commit/19f7e1fe6b7dd92a6f4131dc52492226c1492385))
+* resolved Dockerfile build issues ([8230fc1](https://github.com/rjlee/actual-events/commit/8230fc113afd9811b01fcf37862579379ce7b6b3))
+* support actual api version specification in docker compose file ([e2634c5](https://github.com/rjlee/actual-events/commit/e2634c5a1a2ea15822203bfbad62cac0b1cc778f))
+* support multiple actual-api version in build artifacts ([4c0fdf8](https://github.com/rjlee/actual-events/commit/4c0fdf866424b98372cee179812755022cf8c24f))
+* Update Docker and release workflows to use root context and remove working-directory references ([9e1df6c](https://github.com/rjlee/actual-events/commit/9e1df6c69d18a215b3190a8df1916e2e115b7081))
+* Update Docker image reference to correct repository name ([dcf634e](https://github.com/rjlee/actual-events/commit/dcf634eb4d4f74be993aaeed9ac139c2bee60f0f))
+* Update Docker image repository references to remove redundant suffix ([6342f8b](https://github.com/rjlee/actual-events/commit/6342f8b4be3d1b18f8c5fb3a95759b13ed9b4b63))
+* Updated workflows ([dd47447](https://github.com/rjlee/actual-events/commit/dd474473f53aaf95e3905f725b6fedc6481b41ff))
+* Updates to reflect new workflow ([014e11c](https://github.com/rjlee/actual-events/commit/014e11ce1ed33c6545ec0e4585507e0efe0d6c91))
+* updating workflow ([59d8ebc](https://github.com/rjlee/actual-events/commit/59d8ebce468e81f9905340ee723f27b11b1980e1))
+
+
+### Features
+
+* Add health check endpoint and improve filter handling with regex support ([7eb91a8](https://github.com/rjlee/actual-events/commit/7eb91a864ccf4bd0692d9db6ef9d4086403988d7))
+
 ## [1.1.16](https://github.com/rjlee/actual-events/compare/v1.1.15...v1.1.16) (2025-11-06)
 
 
