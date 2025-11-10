@@ -43,6 +43,9 @@ docker run -d --env-file .env \
 
 Published images live at `ghcr.io/rjlee/actual-events:<tag>` (see [Image tags](#image-tags)).
 
+If you prefer Docker Compose, `docker-compose.yml` exposes the API directly on
+`HTTP_PORT`.
+
 ## Configuration
 
 - `.env` – primary configuration, copy from `.env.example`.
