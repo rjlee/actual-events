@@ -20,7 +20,7 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@actual-app/api": "^25.12.0",
+    "@actual-app/api": "^26.1.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
